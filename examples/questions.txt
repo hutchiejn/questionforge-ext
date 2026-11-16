@@ -1,0 +1,23 @@
+MULTIPLE CHOICE
+1. Which HTML element represents a first-level heading?
+A. <p>
+B. <h1>
+C. <head>
+D. <title>
+Answer: B
+Explanation: <h1> is the main heading element.
+
+IDENTIFICATION
+2. What Python framework includes a built-in admin panel?
+Answer: Django
+
+ENUMERATION
+3. List 3 frontend technologies.
+Answer:
+- HTML
+- CSS
+- JavaScript
+
+ESSAY
+4. Explain the importance of writing accessible websites.
+Answer: Discuss inclusion, assistive technology, and usability.

@@ -1,0 +1,16 @@
+Reformat the assessment you generated earlier in THIS conversation for direct import into QuestionForge. This is a FORMAT REPAIR task, not a new exam.
+
+The original assessment must contain exactly 20 REAL questions with this type distribution: {"multiple_choice":10,"identification":5,"enumeration":3,"essay":2}.
+
+INSTRUCTIONS
+1. Use ONLY the original 20 questions. Preserve their meanings, choices, original answers, and explanations; do not rewrite, add, split, merge, or invent questions.
+2. Do not treat headings, directions, answer-key table rows, suggested answer guides, or numbered answer lists as new questions.
+3. Match each answer from a separate teacher answer key to its original question number. Do not guess missing answers; if the source is incomplete or contradictory, explain the discrepancy and stop rather than output a fabricated answer.
+4. Output exactly ONE valid JSON object, without Markdown fences or commentary, with keys "expected_total", "type_counts", and "questions".
+5. Set "expected_total" to 20 and "type_counts" to {"multiple_choice":10,"identification":5,"enumeration":3,"essay":2}.
+6. Each "questions" item MUST have "number" (sequential 1–20), "type", "question", "options", "answer", "explanation", "expectedCount", "points".
+7. Allowed "type" values: multiple_choice, identification, enumeration, essay, true_false. Preserve the original type. Use "options": [] except for MCQ, which must have four {"label":"A","text":"..."} through D objects. For MCQ "answer" is a letter. For enumeration "answer" is a single string containing JSON-escaped \n separators and "expectedCount" is the number of requested responses. For essay, "answer" holds the suggested response or marking points.
+8. All "explanation" values must be strings (empty string if absent). All "points" must be positive integers (default 1 if unspecified). Use "expectedCount": 1 except for enumeration.
+9. Check that the JSON is parseable, numbers have no gaps or duplicates, there are exactly 20 items, and type counts match {"multiple_choice":10,"identification":5,"enumeration":3,"essay":2}. Do not include a separate answer key.
+
+If you cannot access the original assessment in this chat, ask me to paste it first. If its actual number/types conflict with this specification, report what differs before reformatting.

@@ -1,0 +1,71 @@
+You are helping a teacher generate an assessment. This is STAGE 2: GENERATE THE QUESTIONS.
+
+Use the APPROVED coverage plan and the teaching materials already supplied in THIS SAME ChatGPT conversation. If no plan has been approved, no referenced materials are available, or the requirements conflict, STOP and ask me to resolve that first. Do not invent a prior approval.
+
+Grade / year: Grade 8
+Subject: Science
+Term / quarter: Second Quarter
+Specific focus: Volcanoes and earthquakes
+Source: BOW + lesson plan
+Total questions: 30
+Difficulty: Balanced: foundational through higher-order questions
+Cognitive levels: Remember, Understand, Apply, Analyze
+
+SOURCE DOCUMENTS
+I will attach both the BOW and lesson plan in this ChatGPT conversation. Read the actual attached material before proceeding. If it is missing, unreadable, or incomplete, ask me to attach it or clarify the gap; DO NOT pretend you have read it. Use the BOW to identify scope, pacing, and coverage, and the lesson plan to confirm what was taught and the objectives. Flag conflicts rather than guessing.
+
+REQUIRED QUESTION TYPES AND EXACT COUNTS
+- Multiple choice: 16
+- Identification: 7
+- Enumeration: 4
+- Essay: 3
+
+TOPIC COVERAGE
+Use the materials to propose coverage by competency and topic. Do not invent curriculum competencies or teachable hours.
+
+Important rules:
+- Questions must assess only the material or competencies actually supplied, at the selected grade level.
+- Do not invent curriculum codes, teaching hours, or topics.
+- If a TOS provides a conflicting allocation, flag the discrepancy for my decision.
+- Avoid duplicate, trick, ambiguous, or culturally inaccessible questions.
+- Never claim an attachment was analyzed unless it was actually provided and readable.
+- If there is insufficient supported material for 30 distinct questions, ask for a change to the scope or count; do not pad with fabricated content.
+- Make sure each MCQ has four plausible A–D options and only one clearly correct answer.
+- Let the teacher review and approve accuracy before use.
+
+OUTPUT FOR QUESTIONFORGE — PLAIN TEXT
+- Output ONLY the finalized questions in plain text. No introduction, no markdown tables, no code fences, no coverage table, and no closing commentary.
+- Group questions into labeled sections: MULTIPLE CHOICE, IDENTIFICATION, ENUMERATION, ESSAY, and TRUE OR FALSE (only include selected types).
+- Number EVERY question sequentially, starting at 1 and ending at 30, without restarting numbering in new sections.
+- Put each question number and stem on its own line. Put each answer choice, Answer:, and optional Explanation: on separate lines.
+- Follow these parse-friendly examples of formatting, adapting them only for the selected types:
+
+MULTIPLE CHOICE
+1. Which choice correctly answers the question?
+A. Plausible choice
+B. Correct choice
+C. Plausible choice
+D. Plausible choice
+Answer: B
+Explanation: Brief rationale when useful.
+
+IDENTIFICATION
+2. Name the term described in the question.
+Answer: Exact term
+
+ENUMERATION
+3. List three relevant items.
+Answer:
+- First item
+- Second item
+- Third item
+
+ESSAY
+4. Explain the concept with supporting evidence.
+Answer: Model answer or scoring points in a clear paragraph.
+
+- The numbered examples above demonstrate FORMAT ONLY and are NOT actual assessment questions; do not include them in the final assessment.
+- For enumeration, indicate exactly how many responses are required and provide each model answer on a separate dash-prefixed line.
+- For essays, provide a focused model answer suitable for marking.
+- Supply the correct answer to EVERY question; never fabricate source facts.
+- Ensure the final number and distribution exactly match the requirements above. Double-check silently before responding.

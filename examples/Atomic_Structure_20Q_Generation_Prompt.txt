@@ -1,0 +1,77 @@
+You are helping a teacher generate an assessment. This is STAGE 2: GENERATE THE QUESTIONS.
+
+Use the APPROVED coverage plan and the teaching materials already supplied in THIS SAME ChatGPT conversation. If no plan has been approved, no referenced materials are available, or the requirements conflict, STOP and ask me to resolve that first. Do not invent a prior approval.
+
+Grade / year: Grade 8
+Subject: Science
+Specific focus: Atomic structure
+Source: Lesson plan
+Total questions: 20
+Difficulty: Balanced: foundational through higher-order questions
+Cognitive levels: Remember, Understand, Apply, Analyze
+
+SOURCE DOCUMENTS
+I will attach the lesson plan in this ChatGPT conversation. Read the actual attached material before proceeding. If it is missing, unreadable, or incomplete, ask me to attach it or clarify the gap; DO NOT pretend you have read it.
+
+REQUIRED QUESTION TYPES AND EXACT COUNTS
+- Multiple choice: 10
+- Identification: 5
+- Enumeration: 3
+- Essay: 2
+
+TOPIC COVERAGE
+Use the materials to propose coverage by competency and topic. Do not invent curriculum competencies or teachable hours.
+
+Important rules:
+- Questions must assess only the material or competencies actually supplied, at the selected grade level.
+- Do not invent curriculum codes, teaching hours, or topics.
+- If a TOS provides a conflicting allocation, flag the discrepancy for my decision.
+- Avoid duplicate, trick, ambiguous, or culturally inaccessible questions.
+- Never claim an attachment was analyzed unless it was actually provided and readable.
+- If there is insufficient supported material for 20 distinct questions, ask for a change to the scope or count; do not pad with fabricated content.
+- Make sure each MCQ has four plausible A–D options and only one clearly correct answer.
+- Let the teacher review and approve accuracy before use.
+
+OUTPUT FOR QUESTIONFORGE — STRICT, IMPORT-READY JSON
+This response will be pasted directly into a browser extension's JSON parser.
+Return ONE valid JSON object only. Do not use Markdown, code fences, tables, headings, directions, introductory text, or a separate answer key.
+
+Required top-level structure:
+{
+  "expected_total": 20,
+  "type_counts": {"multiple_choice":10,"identification":5,"enumeration":3,"essay":2},
+  "questions": [
+    {
+      "number": 1,
+      "type": "multiple_choice",
+      "question": "[Full question text goes here]",
+      "options": [
+        {"label": "A", "text": "[First choice]"},
+        {"label": "B", "text": "[Second choice]"},
+        {"label": "C", "text": "[Third choice]"},
+        {"label": "D", "text": "[Fourth choice]"}
+      ],
+      "answer": "B",
+      "explanation": "[Why B is correct]",
+      "expectedCount": 1,
+      "points": 1
+    }
+  ]
+}
+The object above illustrates the DATA SHAPE only: replace all placeholders and include 20 actual questions, not just the example. Preserve the top-level keys and the required question keys.
+
+Field and content rules:
+- "number": integer from 1 to 20, increasing by 1, without gaps or duplicates.
+- "type": one of "multiple_choice", "identification", "enumeration", "essay", "true_false". Use exactly the chosen types and counts in "type_counts". Do not reinterpret an essay as identification.
+- "question": the complete stem only, without question numbers, answer blanks, part headings, or "Directions:".
+- For multiple_choice: precisely four options labeled A, B, C, D, and "answer" is the correct letter (A, B, C or D), not a whole sentence.
+- For identification: "options": []; "answer": the exact correct term, number, or short answer.
+- For enumeration: "options": []; "expectedCount": the exact requested count; "answer": ONE string with items separated by \n characters (JSON-escaped newline sequences). Do NOT use a nested array or numbered list for answers.
+- For essay: "options": []; "answer": a complete model response or marking guide, without separate essay answer headings.
+- For true_false: "options": []; "answer": exactly "True" or "False".
+- For all types: "explanation" is a string (empty string allowed), "points" is a positive integer, "expectedCount" is a positive integer (use 1 except for enumeration).
+- Supply an "answer" for every question in the SAME object. Never append a second "Answer Key" section or table.
+- Ensure all strings are valid JSON (escape embedded quotation marks and line breaks). No trailing commas or comments.
+- Do not create unsupported curriculum facts or invent a missing answer; if the attached material does not establish an answer, ask for clarification BEFORE outputting the JSON.
+
+Before responding, verify internally: (1) array length === 20, (2) numbers are 1–20, (3) counts by type exactly match {"multiple_choice":10,"identification":5,"enumeration":3,"essay":2}, (4) every item has the required fields, (5) every MCQ has four complete choices, (6) each answer matches its question, (7) the entire response can be read by JSON.parse(). If any check fails, revise before output. Do not print the checklist.

@@ -1,0 +1,41 @@
+You are helping a teacher DESIGN a curriculum-aligned assessment. This is STAGE 1: COVERAGE PLANNING ONLY. DO NOT GENERATE ANY QUESTIONS YET.
+
+Grade / year: Grade 8
+Subject: Science
+Term / quarter: Second Quarter
+Specific focus: Volcanoes and earthquakes
+Source: BOW + lesson plan
+Total questions: 30
+Difficulty: Balanced: foundational through higher-order questions
+Cognitive levels: Remember, Understand, Apply, Analyze
+
+SOURCE DOCUMENTS
+I will attach both the BOW and lesson plan in this ChatGPT conversation. Read the actual attached material before proceeding. If it is missing, unreadable, or incomplete, ask me to attach it or clarify the gap; DO NOT pretend you have read it. Use the BOW to identify scope, pacing, and coverage, and the lesson plan to confirm what was taught and the objectives. Flag conflicts rather than guessing.
+
+REQUIRED QUESTION TYPES AND EXACT COUNTS
+- Multiple choice: 16
+- Identification: 7
+- Enumeration: 4
+- Essay: 3
+
+TOPIC COVERAGE
+Use the materials to propose coverage by competency and topic. Do not invent curriculum competencies or teachable hours.
+
+TASK
+1. Identify the topics and learning objectives actually supported by the material; reference relevant section names/pages when available.
+2. Draft a concise coverage plan with the topic, competency/objective, cognitive level, question type, and number of questions. A planning table is fine at this stage.
+3. Check that topic allocations and question-type allocations BOTH total exactly 30. Honor any approved TOS and explain conflicts before changing anything.
+4. Point out missing/unreadable materials, mismatched specifications, or coverage gaps.
+5. Show a brief totals check and WAIT for my approval. End by asking: “Do you approve this coverage plan?”
+
+Important rules:
+- Questions must assess only the material or competencies actually supplied, at the selected grade level.
+- Do not invent curriculum codes, teaching hours, or topics.
+- If a TOS provides a conflicting allocation, flag the discrepancy for my decision.
+- Avoid duplicate, trick, ambiguous, or culturally inaccessible questions.
+- Never claim an attachment was analyzed unless it was actually provided and readable.
+- If there is insufficient supported material for 30 distinct questions, ask for a change to the scope or count; do not pad with fabricated content.
+- Make sure each MCQ has four plausible A–D options and only one clearly correct answer.
+- Let the teacher review and approve accuracy before use.
+
+STOP after the coverage plan. Do not write the assessment until I approve it.

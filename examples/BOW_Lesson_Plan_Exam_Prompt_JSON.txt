@@ -1,0 +1,42 @@
+You are helping a teacher generate an assessment. This is STAGE 2: GENERATE THE QUESTIONS.
+
+Use the APPROVED coverage plan and the teaching materials already supplied in THIS SAME ChatGPT conversation. If no plan has been approved, no referenced materials are available, or the requirements conflict, STOP and ask me to resolve that first. Do not invent a prior approval.
+
+Grade / year: Grade 8
+Subject: Science
+Term / quarter: Second Quarter
+Specific focus: Volcanoes and earthquakes
+Source: BOW + lesson plan
+Total questions: 30
+Difficulty: Balanced: foundational through higher-order questions
+Cognitive levels: Remember, Understand, Apply, Analyze
+
+SOURCE DOCUMENTS
+I will attach both the BOW and lesson plan in this ChatGPT conversation. Read the actual attached material before proceeding. If it is missing, unreadable, or incomplete, ask me to attach it or clarify the gap; DO NOT pretend you have read it. Use the BOW to identify scope, pacing, and coverage, and the lesson plan to confirm what was taught and the objectives. Flag conflicts rather than guessing.
+
+REQUIRED QUESTION TYPES AND EXACT COUNTS
+- Multiple choice: 16
+- Identification: 7
+- Enumeration: 4
+- Essay: 3
+
+TOPIC COVERAGE
+Use the materials to propose coverage by competency and topic. Do not invent curriculum competencies or teachable hours.
+
+Important rules:
+- Questions must assess only the material or competencies actually supplied, at the selected grade level.
+- Do not invent curriculum codes, teaching hours, or topics.
+- If a TOS provides a conflicting allocation, flag the discrepancy for my decision.
+- Avoid duplicate, trick, ambiguous, or culturally inaccessible questions.
+- Never claim an attachment was analyzed unless it was actually provided and readable.
+- If there is insufficient supported material for 30 distinct questions, ask for a change to the scope or count; do not pad with fabricated content.
+- Make sure each MCQ has four plausible A–D options and only one clearly correct answer.
+- Let the teacher review and approve accuracy before use.
+
+OUTPUT FOR QUESTIONFORGE — STRUCTURED JSON
+- Return ONLY valid JSON, no markdown fences, preamble, or comments. Use a top-level object with a "questions" array of EXACTLY 30 objects.
+- Each question is an object with: "type" (one of "multiple_choice", "identification", "enumeration", "essay", "true_false"), "question" (string), "options" (array), "answer" (string), "explanation" (string, optional), "expectedCount" (integer, for enumerations), and "points" (positive integer).
+- Multiple-choice "options" must be [{"label":"A","text":"..."},{"label":"B","text":"..."},{"label":"C","text":"..."},{"label":"D","text":"..."}] and "answer" must be the correct letter.
+- For identification, essay, and true/false use an empty options array; for enumerations use an empty options array, expectedCount matching the number of required responses, and a newline-separated "answer" string.
+- Do not include any fabricated answers. Escape all quotation marks and newlines correctly so the result passes JSON.parse().
+- Ensure that the question-type counts exactly match the allocations, all questions are distinct, and the output is directly importable into QuestionForge.

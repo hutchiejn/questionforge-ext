@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "QuestionForge — Question Paper Builder",
+  "short_name": "QuestionForge",
+  "description": "Turn copied questions into polished Word and PDF assessments without an AI API or server.",
+  "version": "0.8.2",
+  "minimum_chrome_version": "131",
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "action": {
+    "default_title": "Open QuestionForge"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "permissions": [
+    "sidePanel",
+    "contextMenus",
+    "storage"
+  ],
+  "content_security_policy": {
+    "extension_pages": "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none';"
+  }
+}

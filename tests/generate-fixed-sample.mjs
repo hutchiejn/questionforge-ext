@@ -1,0 +1,11 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {parseQuestions} from '../lib/parser.js';
+import {buildDocxBlob} from '../lib/docx-export.js';
+import {DEFAULT_SETTINGS} from '../lib/model.js';
+const raw=await readFile(new URL('./fixtures/atomic-structure-chatgpt-markdown.txt',import.meta.url),'utf8');
+const {questions,warnings}=parseQuestions(raw);
+if (questions.length!==20 || warnings.length) throw new Error('Did not get 20 clean questions: '+warnings.join('; '));
+const settings={...DEFAULT_SETTINGS,title:'Atomic Structure – Practice Assessment',subject:'Grade 8 Science',mode:'teacher',showStudentFields:true,showPoints:false,includeAnswerKey:true,includeExplanations:true,answerKeyLayout:'grouped',answerLines:2,paper:'A4',font:'Calibri',fontSize:11,spacing:'normal'};
+const blob=buildDocxBlob(questions,settings);
+await writeFile('/mnt/data/QuestionForge_v0.6.1_Atomic_Structure_20_Questions.docx',Buffer.from(await blob.arrayBuffer()));
+console.log(`Generated ${questions.length} questions, ${questions.filter(q=>q.answer).length} answers, file ${blob.size} bytes`);

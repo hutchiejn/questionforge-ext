@@ -1,0 +1,11 @@
+{
+  "name": "questionforge-extension",
+  "version": "0.8.2",
+  "private": true,
+  "type": "module",
+  "description": "Offline-first Chrome extension for converting questions to Word and PDF print layouts",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "check": "node --check app.js && node --check background.js && node --check lib/parser.js && node --check lib/prompt-builder.js && node --check lib/docx-export.js && node --check lib/source-extract.js && node --check lib/xlsx-extract.js && node --check lib/structured-source.js && node --check lib/ooxml-zip.js && node --check lib/source-packets.js && node --check lib/source-metadata.js && node --check lib/page-layout.js"
+  }
+}

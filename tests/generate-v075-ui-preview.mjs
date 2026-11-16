@@ -1,0 +1,17 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createDemoQuestions,DEFAULT_SETTINGS} from '../lib/model.js';
+let markup='';const handlers={};
+const app={innerHTML:'',addEventListener(type,cb){handlers[type]=cb;}};
+const area={scrollTop:0};
+globalThis.document={documentElement:{setAttribute(){}},querySelector(sel){return sel==='#app'?app:sel==='#toast-host'?{innerHTML:''}:sel==='.scroll-area'?area:null;}};
+globalThis.localStorage={getItem(){return JSON.stringify({questionforgeDraft:{questions:createDemoQuestions(),settings:{...DEFAULT_SETTINGS,school:'Sample Academy',headerCenter:'Sample Academy · Science Department',margins:'narrow',pageColumns:2,headerLeft:'',headerRight:'',footerLeft:'Practice assessment',theme:'dark'}}});},setItem(){}};
+await import('../app.js');await new Promise(r=>setImmediate(r));
+handlers.click({target:{closest(){return {dataset:{tab:'export'}};}}});
+markup=app.innerHTML;
+const css=readFileSync(new URL('../styles.css',import.meta.url),'utf8');
+const html=`<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><style>${css}</style></head><body><div id="app">${markup}</div></body></html>`;
+writeFileSync('/mnt/data/QuestionForge_v0.7.5/Export_UI_Preview.html',html);
+handlers.click({target:{closest(){return {dataset:{action:'toggleSection',section:'header'}};}}});
+const fullHtml=`<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><style>${css}</style></head><body><div id="app">${app.innerHTML}</div></body></html>`;
+writeFileSync('/mnt/data/QuestionForge_v0.7.5/Header_UI_Preview.html',fullHtml);
+console.log('Export UI emitted',markup.length,'html chars');

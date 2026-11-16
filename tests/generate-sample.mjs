@@ -1,0 +1,14 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {parseQuestions} from '../lib/parser.js';
+import {buildDocxBlob} from '../lib/docx-export.js';
+import {renderPaper} from '../lib/print-export.js';
+import {DEFAULT_SETTINGS} from '../lib/model.js';
+const source=readFileSync(new URL('./fixtures/volcanoes-one-line.txt',import.meta.url),'utf8');
+const questions=parseQuestions(source).questions;
+const pic=readFileSync(new URL('../examples/demo_institution_logo.png',import.meta.url));
+const logo={name:'Example logo',mime:'image/png',data:`data:image/png;base64,${pic.toString('base64')}`,width:256,height:256};
+const settings={...DEFAULT_SETTINGS,logoSizePx:44,brandLogo:logo,logoPlacement:'header',title:'Volcanoes Practice Assessment',school:'Sample Academy',subject:'Earth Science',subtitle:'Practice Assessment',headerLeft:'{school}',headerRight:'{subject}',footerLeft:'{school}',footerCenter:'{title}',footerRight:'{date}',answerKeyLayout:'grouped',showPageNumbers:true};
+const blob=buildDocxBlob(questions,settings);
+writeFileSync(new URL('../examples/sample_v040_44px_logo.docx',import.meta.url),Buffer.from(await blob.arrayBuffer()));
+const paper=renderPaper(questions,settings);writeFileSync('/mnt/data/qf_v04_qa/sample_print.html','<html><head><meta charset="utf-8"><style>'+paper.css+'</style></head><body>'+paper.markup+'</body></html>');
+console.log('generated docx',questions.length);
