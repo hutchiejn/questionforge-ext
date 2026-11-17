@@ -8,7 +8,7 @@ test('prompt tab is integrated with import, review and export',()=>{
   assert.match(app,/Build your exam prompt/);
   assert.match(app,/Copy coverage prompt/);
   assert.match(app,/Copy exam prompt/);
-  assert.match(app,/Fix an existing ChatGPT exam/);
+  assert.match(app,/Fix an existing AI exam/);
   assert.match(app,/data-action="copyRepair"/);
   assert.match(app,/data-tab="prompt"/);
 });
@@ -19,4 +19,53 @@ test('prompt builder offers all requested source materials, question type splits
   assert.match(app,/Plain text \(less reliable\)/);
   assert.match(app,/Structured JSON \(recommended\)/);
   assert.match(css,/\.prompt-preview pre/);
+});
+
+test('legacy attachment drafts restore and copy neutral prompts through approval and repair',async()=>{
+  const handlers={},copied=[];
+  const root={innerHTML:'',addEventListener(type,handler){handlers[type]=handler;}};
+  const toast={innerHTML:''};
+  const originals=Object.fromEntries(['document','localStorage','navigator','setTimeout'].map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
+  const globals={
+    document:{querySelector(selector){return selector==='#app'?root:selector==='#toast-host'?toast:null;}},
+    localStorage:{getItem(){return JSON.stringify({questionforgeDraft:{sourceMode:'chatgpt'},questionforgePrivacy:{shareWarning:false}});}},
+    navigator:{clipboard:{async writeText(text){copied.push(text);}}},
+    setTimeout:()=>0,
+  };
+  for(const [key,value] of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
+  const settle=()=>new Promise(resolve=>setImmediate(resolve));
+  const click=dataset=>handlers.click({target:{closest(){return {dataset};}}});
+  try{
+    await import('../app.js');
+    await settle();
+    click({tab:'prompt'});
+    for(const provider of ['ChatGPT','Gemini','DeepSeek','Claude','Perplexity','Grok'])assert.ok(root.innerHTML.includes(provider));
+    assert.match(root.innerHTML,/value="attachment" checked/);
+    assert.match(root.innerHTML,/If uploads are unavailable/);
+    assert.match(root.innerHTML,/If you switch chatbots or start a new chat/);
+    click({action:'copyExam'});
+    await settle();
+    assert.equal(copied.length,0);
+    assert.match(toast.innerHTML,/Approve the coverage plan in your chatbot first/);
+    click({action:'copyCoverage'});
+    await settle();
+    assert.equal(copied.length,1);
+    assert.match(copied[0],/COVERAGE PLANNING ONLY/);
+    assert.match(copied[0],/paste its verified text if file uploads are unavailable/);
+    handlers.change({target:{id:'plan-approved',checked:true}});
+    click({action:'copyExam'});
+    await settle();
+    assert.equal(copied.length,2);
+    assert.match(copied[1],/STRICT, IMPORT-READY JSON/);
+    click({action:'copyRepair'});
+    await settle();
+    assert.equal(copied.length,3);
+    assert.match(copied[2],/FORMAT REPAIR/);
+    for(const prompt of copied)assert.doesNotMatch(prompt,/ChatGPT|Gemini|DeepSeek|Claude|Perplexity|Grok/i);
+  }finally{
+    for(const [key,descriptor] of Object.entries(originals)){
+      if(descriptor)Object.defineProperty(globalThis,key,descriptor);
+      else delete globalThis[key];
+    }
+  }
 });

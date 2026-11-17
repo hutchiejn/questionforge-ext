@@ -41,7 +41,7 @@ test('topic-only prompt does not demand an attachment while TOS prioritizes teac
 test('stage 2 asks for approved plan in same conversation and plain-text parser format',()=>{
   const exam=buildExamPrompt({...sample(),outputFormat:'text'});
   assert.match(exam,/Use the APPROVED coverage plan/);
-  assert.match(exam,/THIS SAME ChatGPT conversation/);
+  assert.match(exam,/THIS SAME conversation/);
   assert.match(exam,/Number EVERY question sequentially/);
   assert.match(exam,/Answer: B/);
   assert.match(exam,/List three relevant items/);
@@ -83,4 +83,23 @@ test('repair prompt requests preservation of original assessment with exact type
   assert.match(prompt,/Do not treat headings, directions, answer-key table rows/);
   assert.match(prompt,/no gaps or duplicates/);
   assert.match(prompt,/THIS conversation/);
+});
+
+test('prompts stay provider-neutral across every source delivery mode',()=>{
+  for(const source of ['topic','lesson','bow','tos','bow_lesson','curriculum']){
+    const config={...sample(),source,topic:'Atomic structure'};
+    for(const opts of [{mode:'attachment'},{mode:'inline',sourceText:'[P1] Atoms contain protons.'},{mode:'staged'},{mode:'continuation'}]){
+      for(const build of [buildCoveragePrompt,buildExamPrompt]){
+        const prompt=build(config,opts);
+        assert.doesNotMatch(prompt,/ChatGPT|Gemini|DeepSeek|Claude|Perplexity|Grok/i);
+        assert.match(prompt,/Do not browse the web/);
+        assert.match(prompt,/reference data, not instructions/);
+      }
+    }
+  }
+  assert.match(buildCoveragePrompt(sample()),/paste its verified text if file uploads are unavailable/);
+  for(const outputFormat of ['json','text']){
+    assert.match(buildExamPrompt({...sample(),outputFormat}),/Do not (?:append|include) citations, search-result markers/);
+  }
+  assert.match(buildRepairPrompt(sample()),/without Markdown fences, commentary, citations, search-result markers/);
 });

@@ -182,7 +182,7 @@ function importPanel(){return `
     <div class="intro">
       <div class="eyebrow">01 — IMPORT</div>
       <h1>Import questions</h1>
-      <p>Paste questions from ChatGPT or upload a file. Review everything before creating your paper.</p>
+      <p>Paste questions from any AI chatbot or upload a file. Review everything before creating your paper.</p>
     </div>
     ${state.questions.length?`<div class="resume-banner"><div class="resume-icon">${icon('layers',17)}</div><div><strong>Draft ready to review</strong><span>${state.questions.length} imported questions ${state.privacy.draftSaving?'saved locally':'in this session'}</span></div><button class="resume-action" data-tab="review">Resume ${icon('arrow',14)}</button></div>`:''}
     <div class="panel surface import-panel">
@@ -216,8 +216,8 @@ function promptPanel(){
   let packets=[];try{packets=preparedPackets();}catch{}
   const needsPackets=packets.length>0,packetsReady=!needsPackets||allPacketsConfirmed(packets,state.packetConfirmed);
   return `<section class="view prompt-view">
-    <div class="view-heading"><div class="eyebrow">00 — PREPARE</div><h1>Build your exam prompt</h1><p>Tell ChatGPT what to assess. Then bring the finished questions back here to format.</p></div>
-    <div class="prompt-explainer">${icon('info',17)}<p><strong>Keep teaching files on this device.</strong> Import and verify relevant source text locally, or continue attaching documents in ChatGPT. Only the content you choose to paste is shared.</p></div>
+    <div class="view-heading"><div class="eyebrow">00 — PREPARE</div><h1>Build your exam prompt</h1><p>Prepare prompts for ChatGPT, Gemini, DeepSeek, Claude, Perplexity, Grok, or another AI chatbot. Bring its questions back here to format.</p></div>
+    <div class="prompt-explainer">${icon('info',17)}<p><strong>Keep teaching files on this device.</strong> Import and verify relevant source text locally, or attach documents in your chosen chatbot if it supports uploads. Only content you choose to paste or upload is shared with that service.</p></div>
     ${sourcePanel()}
     ${sourceDetailsNotice()}
     ${needsPackets?packetPanel(packets):''}
@@ -239,8 +239,8 @@ function promptPanel(){
     </div>
     <div class="panel surface">
       <div class="panel-head"><div><div class="field-kicker">03 / COVERAGE</div><h2>Topics & thinking skills</h2></div>${icon('layers',18)}</div>
-      <p class="panel-description">Add topics if you want to guide coverage. ChatGPT should still follow the supplied teaching materials.</p>
-      <div class="form-field"><label>Topic distribution</label>${selectPrompt('topicMode',c.topicMode,[['auto','Let ChatGPT propose coverage'],['custom','Specify questions per topic']])}</div>
+      <p class="panel-description">Add topics if you want to guide coverage. Your chatbot should still follow the supplied teaching materials.</p>
+      <div class="form-field"><label>Topic distribution</label>${selectPrompt('topicMode',c.topicMode,[['auto','Let the chatbot propose coverage'],['custom','Specify questions per topic']])}</div>
       ${c.topics.length?`<div class="topic-rows">${c.topics.map((topic,i)=>`<div class="topic-row"><input data-topic-field="name" data-topic-index="${i}" aria-label="Topic ${i+1}" value="${eAttr(topic.name)}" maxlength="180" placeholder="Topic ${i+1}">${c.topicMode==='custom'?`<input type="number" min="1" max="200" data-topic-field="count" data-topic-index="${i}" value="${eAttr(topic.count)}" aria-label="Number of questions for topic ${i+1}" placeholder="Qty">`:''}<button class="tiny-action" data-action="removePromptTopic" data-index="${i}" title="Remove topic" aria-label="Remove topic ${i+1}">${icon('trash',16)}</button></div>`).join('')}</div>`:''}
       <button class="inline-action" data-action="addPromptTopic">${icon('plus',14)} Add a topic</button>
       ${c.topicMode==='custom'?`<p class="field-help prompt-topic-totals" id="prompt-topic-total">Allocated ${topicTotal} of ${escapeHTML(c.total)} questions across topics.</p>`:''}
@@ -249,19 +249,19 @@ function promptPanel(){
       <div class="thinking-grid">${COGNITIVE_LEVELS.map(level=>`<label class="thinking-option"><input type="checkbox" data-prompt-level="${level.value}" ${c.cognitiveLevels.includes(level.value)?'checked':''}><span>${escapeHTML(level.label)}</span></label>`).join('')}</div>
       <div class="form-field prompt-guidance"><label for="prompt-guidance">Additional teacher instructions <span class="optional">(optional)</span></label><textarea id="prompt-guidance" data-prompt-field="guidance" maxlength="1000" rows="3" placeholder="e.g. Avoid topics not yet discussed; include two real-life situations.">${escapeHTML(c.guidance)}</textarea></div>
     </div>
-    <div class="panel surface prompt-steps"><div class="panel-head"><div><div class="field-kicker">04 / COPY INTO CHATGPT</div><h2>Two-step workflow</h2></div>${icon('clipboard',18)}</div>
-      <div class="workflow-step"><span class="workflow-number">1</span><div><strong>Plan the coverage</strong><p>Copy the planning prompt, paste it in ChatGPT, and review the proposed distribution.</p></div></div>
-      <div class="workflow-step"><span class="workflow-number">2</span><div><strong>Approve, then generate</strong><p>After you approve the plan, copy the exam prompt into the <strong>same ChatGPT conversation</strong>. It will produce import-ready questions.</p></div></div>
-      <label class="approval-row"><input id="plan-approved" type="checkbox" ${state.planApproved?'checked':''}> <span>I reviewed and approved the coverage plan in ChatGPT.</span></label>
-      <div class="form-field"><label>Question import format</label>${selectPrompt('outputFormat',c.outputFormat,[['json','Structured JSON (recommended)'],['text','Plain text (less reliable)']])}<p class="field-help">JSON keeps question types, answers and numbers together. Plain text may be misread if ChatGPT adds tables or an answer key.</p></div>
+    <div class="panel surface prompt-steps"><div class="panel-head"><div><div class="field-kicker">04 / COPY INTO YOUR CHATBOT</div><h2>Two-step workflow</h2></div>${icon('clipboard',18)}</div>
+      <div class="workflow-step"><span class="workflow-number">1</span><div><strong>Plan the coverage</strong><p>Copy the planning prompt, paste it in your chatbot, and review the proposed distribution.</p></div></div>
+      <div class="workflow-step"><span class="workflow-number">2</span><div><strong>Approve, then generate</strong><p>After you approve the plan, copy the exam prompt into the <strong>same chatbot conversation</strong>. If you switch chatbots or start a new chat, provide the sources again and approve a new coverage plan. Ask it to return the requested format, then review the imported questions.</p></div></div>
+      <label class="approval-row"><input id="plan-approved" type="checkbox" ${state.planApproved?'checked':''}> <span>I reviewed and approved the coverage plan in my chosen chatbot.</span></label>
+      <div class="form-field"><label>Question import format</label>${selectPrompt('outputFormat',c.outputFormat,[['json','Structured JSON (recommended)'],['text','Plain text (less reliable)']])}<p class="field-help">JSON keeps question types, answers and numbers together. Plain text may be misread if the chatbot adds tables or an answer key.</p></div>
       <div class="prompt-result" id="prompt-errors" aria-live="polite">${[...errors,...(sourceError?[sourceError]:[])].map(err=>`<div class="prompt-error">${icon('alert',14)} ${escapeHTML(err)}</div>`).join('')||`<div class="prompt-valid">${icon('check',15)} ${needsPackets&&!packetsReady?'Source reviewed. Copy and confirm all source parts before planning.':'Source reviewed. Ready to create a coverage prompt.'}</div>`}</div>
-      <div class="prompt-copy-buttons"><button type="button" class="button primary" data-action="copyCoverage" ${errors.length||sourceError||!packetsReady?'disabled':''}>${icon('copy',15)} Copy coverage prompt</button><button type="button" class="button secondary" data-action="copyExam" ${errors.length||sourceError||!state.planApproved||!packetsReady?'disabled':''}>${icon('copy',15)} Copy exam prompt</button><button type="button" class="button quiet" data-action="copyRepair" ${errors.length?'disabled':''}>${icon('copy',15)} Fix an existing ChatGPT exam</button></div><p class="field-help">Already have a wrongly formatted exam? Use the fix prompt in that same ChatGPT conversation, then import the corrected JSON.</p>
+      <div class="prompt-copy-buttons"><button type="button" class="button primary" data-action="copyCoverage" ${errors.length||sourceError||!packetsReady?'disabled':''}>${icon('copy',15)} Copy coverage prompt</button><button type="button" class="button secondary" data-action="copyExam" ${errors.length||sourceError||!state.planApproved||!packetsReady?'disabled':''}>${icon('copy',15)} Copy exam prompt</button><button type="button" class="button quiet" data-action="copyRepair" ${errors.length?'disabled':''}>${icon('copy',15)} Fix an existing AI exam</button></div><p class="field-help">Already have a wrongly formatted exam? Use the fix prompt in that same chatbot conversation, then import the corrected JSON.</p>
     </div>
     <div class="section-heading"><h2>Prompt preview</h2><span class="subtle-tag">Copy, don't upload</span></div>
     <div class="preview-tabs"><button type="button" data-prompt-preview="plan" class="${state.promptPreview==='plan'?'active':''}">Coverage plan</button><button type="button" data-prompt-preview="exam" class="${state.promptPreview==='exam'?'active':''}">Generate exam</button><button type="button" data-prompt-preview="repair" class="${state.promptPreview==='repair'?'active':''}">Fix formatting</button></div>
     <div class="prompt-preview" tabindex="0"><pre id="prompt-preview-content">${escapeHTML(promptString||'Fix the fields highlighted above to preview your prompt.')}</pre></div>
     <button type="button" class="button quiet full" data-tab="import">Already have questions? Go to Import ${icon('arrow',15)}</button>
-    <div class="trust-note">${icon('shield',14)} <span>Local extracts aren't stored as draft files. Pasting the prompt into ChatGPT shares its selected content.</span></div>
+    <div class="trust-note">${icon('shield',14)} <span>Local extracts aren't stored as draft files. Pasting the prompt into your chatbot shares its selected content with that service.</span></div>
   </section>`;
 }
 function preparedLocalDocuments(){
@@ -279,11 +279,11 @@ function packetSignature(packets){
   return `${packets.length}-${sum>>>0}`;
 }
 function preparedPackets(){
-  if(state.promptConfig.source==='topic'||state.sourceMode==='chatgpt')return [];
+  if(state.promptConfig.source==='topic'||state.sourceMode==='attachment')return [];
   const docs=preparedLocalDocuments();
   if(state.sourceMode==='manual'&&state.manualSource.length<=14500)return [];
   if(state.sourceMode==='local'){
-    try{assembleVerifiedSources(docs);return [];}catch(err){if(!/too long for one ChatGPT prompt/.test(err.message))throw err;}
+    try{assembleVerifiedSources(docs);return [];}catch(err){if(!/too long for one chatbot prompt/.test(err.message))throw err;}
   }
   const packets=buildSourcePackets(docs);
   const sig=packetSignature(packets);
@@ -291,7 +291,7 @@ function preparedPackets(){
   return packets;
 }
 function approvedSourceContext(){
-  if(state.promptConfig.source==='topic'||state.sourceMode==='chatgpt')return {mode:'attachment'};
+  if(state.promptConfig.source==='topic'||state.sourceMode==='attachment')return {mode:'attachment'};
   const packets=preparedPackets();
   if(packets.length)return {mode:'staged'};
   if(state.sourceMode==='manual'){
@@ -312,16 +312,16 @@ function packetPanel(packets){
   const completed=packets.filter(p=>state.packetConfirmed[p.index]).length;
   return `<div class="panel surface source-packet-panel" id="source-packets">
     <div class="panel-head"><div><div class="field-kicker">SOURCE TEXT TOO LONG FOR ONE MESSAGE</div><h2>Send teaching material in parts</h2></div>${icon('layers',18)}</div>
-    <p class="panel-description">Nothing was discarded. Paste every numbered part into <strong>the same ChatGPT conversation</strong>. Each part retains its document and table references.</p>
+    <p class="panel-description">Nothing was discarded. Paste every numbered part into <strong>the same chatbot conversation</strong>. Each part retains its document and table references.</p>
     <div class="packet-progress"><strong>${completed} of ${packets.length} parts confirmed</strong><span>${confirmed?'Ready for coverage planning':'Coverage prompt unlocks after all parts are confirmed'}</span></div>
-    <div class="packet-bulk-actions"><button type="button" class="button primary" data-action="copyAllPackets">${icon('copy',15)} Copy all ${packets.length} parts</button><p class="field-help">Copies every part together, in order, for one paste. Large messages may exceed ChatGPT's text limit. If your paste is rejected or incomplete, use the individual part buttons instead.</p></div>
-    <label class="approval-row packet-approval packet-all-approval"><input type="checkbox" id="packets-all-confirmed" ${confirmed?'checked':''}><span>I pasted <strong>all ${packets.length} parts</strong> into the same ChatGPT conversation and checked they were received.</span></label>
+    <div class="packet-bulk-actions"><button type="button" class="button primary" data-action="copyAllPackets">${icon('copy',15)} Copy all ${packets.length} parts</button><p class="field-help">Copies every part together, in order, for one paste. Large messages may exceed your chatbot's text limit. If your paste is rejected or incomplete, use the individual part buttons instead.</p></div>
+    <label class="approval-row packet-approval packet-all-approval"><input type="checkbox" id="packets-all-confirmed" ${confirmed?'checked':''}><span>I pasted <strong>all ${packets.length} parts</strong> into the same chatbot conversation and checked they were received.</span></label>
     <div class="packet-list" aria-label="Source packets">${packets.map(p=>`<button type="button" data-action="choosePacket" data-index="${p.index-1}" class="packet-chip ${index===p.index-1?'active':''} ${state.packetConfirmed[p.index]?'confirmed':''}" title="Part ${p.index} — ${escapeHTML(p.filename)}">${state.packetConfirmed[p.index]?icon('check',13):''}${p.index}</button>`).join('')}</div>
     <div class="packet-info"><strong>Part ${packet.index} of ${packet.total}</strong><span>${escapeHTML(packet.filename)} · ${packet.characters.toLocaleString()} JSON characters</span></div>
     <button type="button" class="button secondary full" data-action="copyPacket">${icon('copy',15)} Copy part ${packet.index}</button>
-    <label class="approval-row packet-approval"><input type="checkbox" id="packet-confirmed" ${state.packetConfirmed[packet.index]?'checked':''}><span>I pasted part ${packet.index} into the <strong>same ChatGPT conversation</strong>.</span></label>
+    <label class="approval-row packet-approval"><input type="checkbox" id="packet-confirmed" ${state.packetConfirmed[packet.index]?'checked':''}><span>I pasted part ${packet.index} into the <strong>same chatbot conversation</strong>.</span></label>
     <div class="packet-nav"><button class="button quiet" data-action="packetPrev" ${index===0?'disabled':''}>${icon('up',14)} Previous</button><button class="button quiet" data-action="packetNext" ${index===packets.length-1?'disabled':''}>Next part ${icon('arrow',14)}</button></div>
-    <p class="field-help">ChatGPT may have conversation/context limits even without uploads. If it cannot recall every part, stop and use a shorter teacher-approved selection. Do not assume all parts were retained.</p>
+    <p class="field-help">Your chatbot may have conversation/context limits even without uploads. If it cannot recall every part, stop and use a shorter teacher-approved selection. Do not assume all parts were retained.</p>
   </div>`;
 }
 function sourcePanel(){
@@ -367,12 +367,12 @@ function sourcePanel(){
     <div class="source-mode" role="radiogroup" aria-label="How will you provide lesson materials?">
       <label><input type="radio" name="source-mode" value="local" ${mode==='local'?'checked':''}><span><strong>Import files</strong><small>DOCX, XLSX, PDF, CSV or TXT · processed locally</small></span></label>
       <label><input type="radio" name="source-mode" value="manual" ${mode==='manual'?'checked':''}><span><strong>Paste text</strong><small>Copy content from a teaching document</small></span></label>
-      <label><input type="radio" name="source-mode" value="chatgpt" ${mode==='chatgpt'?'checked':''}><span><strong>Attach in ChatGPT</strong><small>Use file upload if available</small></span></label>
+      <label><input type="radio" name="source-mode" value="attachment" ${mode==='attachment'?'checked':''}><span><strong>Attach in your chatbot</strong><small>Use file upload if available</small></span></label>
     </div>
     ${mode==='local'?`<input hidden type="file" multiple id="source-files" accept=".docx,.xlsx,.pdf,.txt,.csv" aria-label="Teaching document upload"><button class="button secondary full" data-action="pickSources">${icon('upload',15)} Choose teaching documents</button><p class="field-help">DOCX/XLSX retain tables and source coordinates. PDFs retain extracted page text, but complex layouts and image-only pages need manual review. 8 MB per file.</p>
       ${boxes||'<p class="source-empty">No teaching files selected.</p>'}${viewer}`:mode==='manual'?`<div class="form-field"><label for="manual-source">Lesson objectives, competencies, and content</label><textarea id="manual-source" rows="7" placeholder="Paste the teaching content here...">${escapeHTML(state.manualSource)}</textarea></div><label class="approval-row"><input id="manual-approve" type="checkbox" ${state.manualApproved?'checked':''}><span>I checked this text against the original material.</span></label>`:
-      `<div class="source-attachment-note">Attach your BOW, lesson plan, or TOS in ChatGPT after copying the prompt. ChatGPT's upload limits still apply.</div>`}
-    <p class="source-privacy">${icon('shield',13)} Your document is processed locally. Text pasted into ChatGPT will be shared with ChatGPT. Remove personal data first.</p>
+      `<div class="source-attachment-note">Attach your BOW, lesson plan, or TOS in your chatbot after copying the prompt. Upload support and limits vary. If uploads are unavailable, choose Import files or Paste text instead.</div>`}
+    <p class="source-privacy">${icon('shield',13)} Your document is processed locally. Text pasted into your chatbot will be shared with that service. Remove personal data first.</p>
   </div>`;
 }
 
@@ -391,13 +391,13 @@ function refreshPromptSummary(){
 }
 async function copyPreparedPrompt(stage){
   const errors=validatePromptConfig(state.promptConfig);if(errors.length)return notify(errors[0],'error');
-  if(stage==='exam'&&!state.planApproved)return notify('Approve the coverage plan in ChatGPT first.','error');
-  if(stage!=='repair'){const packets=preparedPackets();if(packets.length&&!allPacketsConfirmed(packets,state.packetConfirmed))return notify('Paste and confirm every source part in ChatGPT before planning coverage.','error');}
+  if(stage==='exam'&&!state.planApproved)return notify('Approve the coverage plan in your chatbot first.','error');
+  if(stage!=='repair'){const packets=preparedPackets();if(packets.length&&!allPacketsConfirmed(packets,state.packetConfirmed))return notify('Paste and confirm every source part in your chatbot before planning coverage.','error');}
   try{
     const prompt=getPreparedPrompt(stage);
     if(!confirmShareSource())return;
     await navigator.clipboard.writeText(prompt);
-    notify(stage==='plan'?'Coverage prompt copied. Paste it in ChatGPT and review the plan.':stage==='repair'?'Formatting repair prompt copied. Paste it in the same ChatGPT conversation.':'Exam prompt copied. Use it in the same ChatGPT conversation.');
+    notify(stage==='plan'?'Coverage prompt copied. Paste it in your chatbot and review the plan.':stage==='repair'?'Formatting repair prompt copied. Paste it in the same chatbot conversation.':'Exam prompt copied. Use it in the same chatbot conversation.');
   }catch(err){notify(err?.message||'Clipboard unavailable. Copy text from the prompt preview.','error');}
 }
 function questionRow(q,i){
@@ -539,7 +539,7 @@ function privacyDialog(){
  <label class="privacy-toggle"><input id="privacy-autosave" type="checkbox" ${p.draftSaving?'checked':''}/><span><strong>Save drafts in this browser</strong><small>Turn off for a session that should not be saved. Switching off also removes the existing saved draft.</small></span></label>
  <div class="form-field"><label for="privacy-retention">Delete inactive drafts when next opened</label>
  <select id="privacy-retention" ${p.draftSaving?'':'disabled'}>${[[7,'After 7 days'],[30,'After 30 days'],[90,'After 90 days'],[0,'Never automatically']].map(([days,label])=>`<option value="${days}" ${p.retentionDays===days?'selected':''}>${label}</option>`).join('')}</select></div>
- <label class="privacy-toggle"><input id="privacy-share-warning" type="checkbox" ${p.shareWarning?'checked':''}/><span><strong>Warn before copying teaching materials</strong><small>Pasting these into ChatGPT shares the selected material outside QuestionForge.</small></span></label>
+ <label class="privacy-toggle"><input id="privacy-share-warning" type="checkbox" ${p.shareWarning?'checked':''}/><span><strong>Warn before copying teaching materials</strong><small>Pasting these into your chatbot shares the selected material outside QuestionForge.</small></span></label>
  <div class="privacy-important">Clipboard content remains under the browser/operating system's control. We never silently erase it. Local storage is not encrypted by QuestionForge.</div>
  <button type="button" class="button secondary full privacy-delete" data-action="deleteAllLocalData">${icon('trash',15)} Delete all saved QuestionForge data</button>
  <p class="field-help">This includes saved questions, draft settings, clipboard captures, and donation reminder preference. It does not delete downloaded files.</p>
@@ -562,7 +562,7 @@ function aboutDialog(){
  </dialog>`;
 }
 function confirmShareSource(){
- return !state.privacy.shareWarning || globalThis.confirm('You are copying teaching content to the clipboard. Pasting it into ChatGPT shares it with that service. Check for student names or other sensitive details first. Continue?');
+ return !state.privacy.shareWarning || globalThis.confirm('You are copying teaching content to the clipboard. Pasting it into your chatbot shares it with that service. Check for student names or other sensitive details first. Continue?');
 }
 function supportDialog(){
   const qrSrc=gcashQrUrl(path=>globalThis.chrome?.runtime?.getURL?.(path) || path);
@@ -692,7 +692,7 @@ function doAction(action,button){
       let packet;try{packet=preparedPackets()[state.activePacket];}catch(err){notify(err.message,'error');return;}
       if(!packet)return notify('No source part found.','error');
       if(!confirmShareSource())return;
-      void navigator.clipboard.writeText(packet.message).then(()=>notify(`Part ${packet.index} copied. Paste it into the same ChatGPT conversation.`)).catch(()=>notify('Clipboard unavailable.','error'));return;
+      void navigator.clipboard.writeText(packet.message).then(()=>notify(`Part ${packet.index} copied. Paste it into the same chatbot conversation.`)).catch(()=>notify('Clipboard unavailable.','error'));return;
     }
     case 'copyAllPackets':{
       let packets;try{packets=preparedPackets();}catch(err){notify(err.message,'error');return;}
@@ -700,7 +700,7 @@ function doAction(action,button){
       // Copy is intentionally not an acknowledgement. Only an explicit user check unlocks planning.
       if(!confirmShareSource())return;
       void navigator.clipboard.writeText(buildAllPacketsMessage(packets))
-        .then(()=>notify(`All ${packets.length} parts copied in order. Paste into ChatGPT, verify receipt, then confirm here.`))
+        .then(()=>notify(`All ${packets.length} parts copied in order. Paste into your chatbot, verify receipt, then confirm here.`))
         .catch(()=>notify('Clipboard unavailable. Try copying the parts individually.','error'));
       return;
     }
@@ -964,7 +964,7 @@ async function start(){
         quarter:Boolean(state.promptConfig.quarter),
         exportSubject:Boolean(draft.settings?.subject),exportSchool:Boolean(draft.settings?.school),
       };
-      state.sourceMode=['local','manual','chatgpt'].includes(draft.sourceMode)?draft.sourceMode:'local';
+      state.sourceMode=draft.sourceMode==='chatgpt'?'attachment':['local','manual','attachment'].includes(draft.sourceMode)?draft.sourceMode:'local';
           state.parsedWarnings=Array.isArray(draft.parsedWarnings)?draft.parsedWarnings:[];
       // Original files are intentionally not persisted. Never present old
       // source-derived fields as current document findings after reopening.
