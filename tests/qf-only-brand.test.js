@@ -14,7 +14,7 @@ test('The current brand mark is the QF glyph, without previous page fold or arro
 });
 test('Chrome icons all use the updated size-specific PNG files',()=>{
  const m=JSON.parse(file('manifest.json'));
- assert.equal(m.version,'0.8.2');
+ assert.equal(m.version,JSON.parse(file('package.json')).version);
  for(const [s,p] of Object.entries(m.icons)){
   const b=fs.readFileSync(new URL('../'+p,import.meta.url));
   assert.equal(b.readUInt32BE(16),Number(s));

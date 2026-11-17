@@ -103,3 +103,37 @@ test('prompts stay provider-neutral across every source delivery mode',()=>{
   }
   assert.match(buildRepairPrompt(sample()),/without Markdown fences, commentary, citations, search-result markers/);
 });
+
+test('language defaults keep old drafts working and custom regional varieties are accepted',()=>{
+  assert.equal(normalizePromptConfig({}).language,'English');
+  assert.equal(normalizePromptConfig({language:'  Kinaray-a (Antique)  '}).language,'Kinaray-a (Antique)');
+  assert.equal(normalizePromptConfig({language:'a'.repeat(150)}).language.length,120);
+  const blank={...sample(),language:'   '};
+  assert.ok(validatePromptConfig(blank).includes('Enter the exam language or dialect.'));
+  for(const build of [buildCoveragePrompt,buildExamPrompt,buildRepairPrompt])assert.throws(()=>build(blank),/language or dialect/);
+});
+
+test('planning and exam prompts apply the chosen language without translating import markers',()=>{
+  for(const language of ['Tagalog','Cebuano (Bisaya)','Hiligaynon (Iloilo)','Tagalog (Batangas)']){
+    for(const outputFormat of ['json','text']){
+      const config={...sample(),language,outputFormat};
+      const plan=buildCoveragePrompt(config);
+      assert.ok(plan.includes(`asking for approval in ${language}`));
+      for(const opts of [{mode:'attachment'},{mode:'inline',sourceText:'[P1] Nouns name people.'},{mode:'staged'},{mode:'continuation'}]){
+        for(const build of [buildCoveragePrompt,buildExamPrompt]){
+          const prompt=build(config,opts);
+          assert.ok(prompt.includes(`Exam language / dialect: ${language}`));
+          assert.match(prompt,/question stems, option text, written answers, explanations, and marking guides/);
+          assert.match(prompt,/do not silently substitute another language/);
+          assert.match(prompt,/Keep JSON field names, question type identifiers, A–D choice labels/);
+          assert.match(prompt,/answer strings "True" or "False" in English/);
+          assert.match(prompt,/Type:, Answer:, Explanation: labels exactly as shown/);
+        }
+      }
+      const repair=buildRepairPrompt(config);
+      assert.ok(repair.includes(`Exam language / dialect: ${language}`));
+      assert.match(repair,/Preserve the original assessment's language and regional wording/);
+      assert.match(repair,/STOP and ask before translating/);
+    }
+  }
+});

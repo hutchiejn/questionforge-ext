@@ -62,6 +62,7 @@ let supportAutoShownThisOpen=false;
 let gcashQrReady=false;
 let gcashCardReady=false;
 const chromeAvailable=Boolean(globalThis.chrome?.storage?.local);
+const version=globalThis.chrome?.runtime?.getManifest?.().version||'development';
 async function storeGet(keys){
   if(chromeAvailable)return chrome.storage.local.get(keys);
   try{return JSON.parse(localStorage.getItem('questionforgeState')||'{}');}catch{return {};}
@@ -227,6 +228,7 @@ function promptPanel(){
       <div class="two-columns"><div class="form-field"><label for="prompt-grade">Grade / year level</label><input id="prompt-grade" data-prompt-field="grade" maxlength="60" value="${eAttr(c.grade)}" placeholder="e.g. Grade 8"></div>
         <div class="form-field"><label for="prompt-subject">Subject</label><input id="prompt-subject" data-prompt-field="subject" maxlength="100" value="${eAttr(c.subject)}" placeholder="e.g. Science"></div></div>
       <div class="form-field"><label for="prompt-topic">${c.source==='topic'?'Topic to assess':'Specific topic or focus'} <span class="optional">${c.source==='topic'?'':'(optional)'}</span></label><input id="prompt-topic" data-prompt-field="topic" maxlength="300" value="${eAttr(c.topic)}" placeholder="e.g. Volcanoes and earthquakes"></div>
+      <div class="form-field"><label for="prompt-language">Exam language / dialect</label><input id="prompt-language" data-prompt-field="language" list="prompt-languages" maxlength="120" value="${eAttr(c.language)}" placeholder="e.g. Tagalog, Cebuano, or Tagalog (Batangas)" aria-describedby="prompt-language-help"><datalist id="prompt-languages">${['English','Filipino','Tagalog','Cebuano (Bisaya)','Hiligaynon (Ilonggo)','Ilocano','Waray','Kapampangan','Pangasinan','Bikol'].map(language=>`<option value="${eAttr(language)}"></option>`).join('')}</datalist><p class="field-help" id="prompt-language-help">Choose a suggestion or type any language or regional variety. The prompt will request it for questions, choices, answers, and explanations. Import labels stay unchanged.</p></div>
       <div class="form-field"><label for="prompt-quarter">Quarter / assessment period <span class="optional">(optional)</span></label><input id="prompt-quarter" data-prompt-field="quarter" maxlength="80" value="${eAttr(c.quarter)}" placeholder="e.g. Quarter 2"></div>
       <div class="two-columns"><div class="form-field"><label for="prompt-total">Total questions</label><input id="prompt-total" type="number" min="1" max="200" data-prompt-field="total" value="${eAttr(c.total)}"></div>
         <div class="form-field"><label for="prompt-difficulty">Difficulty</label>${selectPrompt('difficulty',c.difficulty,[['foundation','Mostly foundational'],['balanced','Balanced'],['higher','Higher-order thinking']],'prompt-difficulty')}</div></div>
@@ -385,6 +387,7 @@ function refreshPromptSummary(){
   const topic=$('#prompt-topic-total');if(topic)topic.textContent=`Allocated ${c.topics.reduce((a,t)=>a+(Number(t.count)||0),0)} of ${c.total} questions across topics.`;
   let packets=[];try{packets=preparedPackets();}catch{}
   const packetBlocked=packets.length>0&&!allPacketsConfirmed(packets,state.packetConfirmed);
+  const approval=$('#plan-approved');if(approval)approval.checked=state.planApproved;
   const errorBox=$('#prompt-errors');if(errorBox)errorBox.innerHTML=[...errs,...(srcError?[srcError]:[])].map(err=>`<div class="prompt-error">${icon('alert',14)} ${escapeHTML(err)}</div>`).join('')||`<div class="prompt-valid">${icon('check',15)} ${packetBlocked?'Source reviewed. Copy and confirm all source parts before planning.':'Source reviewed. Ready to create a coverage prompt.'}</div>`;
   for(const action of ['copyCoverage','copyExam','copyRepair']){const btn=document.querySelector(`[data-action="${action}"]`);if(btn)btn.disabled=Boolean(errs.length)||(action!=='copyRepair'&&(!!srcError||packetBlocked))||(action==='copyExam'&&!state.planApproved);}
   const pre=$('#prompt-preview-content');if(pre){try{pre.textContent=errs.length?'Fix the settings above to preview your prompt.':getPreparedPrompt(state.promptPreview);}catch(err){pre.textContent=`SOURCE NOT READY: ${err.message}`;}}
@@ -557,7 +560,7 @@ function aboutDialog(){
      <a class="about-link" href="docs/contact.html" target="_blank" rel="noopener noreferrer">${icon('help',18)} <span><strong>Contact & support</strong><small>Report issues or send feedback</small></span>${icon('arrow',15)}</a>
      <a class="about-link" href="https://github.com/xf00889" target="_blank" rel="noopener noreferrer">${icon('file',18)} <span><strong>Developer portfolio</strong><small>GitHub · xf00889</small></span>${icon('arrow',15)}</a>
    </div>
-   <p class="about-footnote">Version 0.8.2 · QuestionForge is free to use. Donations are always optional.</p>
+   <p class="about-footnote">Version ${escapeHTML(version)} · QuestionForge is free to use. Donations are always optional.</p>
    <button type="button" class="button secondary full" data-action="closeAbout">Close</button>
  </dialog>`;
 }
@@ -591,7 +594,7 @@ function render(preserveScroll=false){
   applyTheme();
   const scrollTop=preserveScroll?($('.scroll-area')?.scrollTop||0):0;
   const content=state.tab==='prompt'?promptPanel():state.tab==='review'?reviewPanel():state.tab==='export'?exportPanel():importPanel();
-  $('#app').innerHTML=`${header()}${tabs()}<div class="scroll-area">${content}</div><footer class="footer" aria-label="QuestionForge information"><span class="footer-version">QUESTIONFORGE <b>0.8.2</b></span><button type="button" class="footer-support" data-action="supportProject" title="Voluntary support — QuestionForge is always free">${icon('heart',13)} <span>Support</span></button><button type="button" class="footer-about" data-action="openAbout" title="Privacy policy and developer contact">${icon('info',12)} <span>About</span></button></footer>${supportDialog()}${privacyDialog()}${aboutDialog()}<div id="toast-host" class="toast-host"></div>`;
+  $('#app').innerHTML=`${header()}${tabs()}<div class="scroll-area">${content}</div><footer class="footer" aria-label="QuestionForge information"><span class="footer-version">QUESTIONFORGE <b>${escapeHTML(version)}</b></span><button type="button" class="footer-support" data-action="supportProject" title="Voluntary support — QuestionForge is always free">${icon('heart',13)} <span>Support</span></button><button type="button" class="footer-about" data-action="openAbout" title="Privacy policy and developer contact">${icon('info',12)} <span>About</span></button></footer>${supportDialog()}${privacyDialog()}${aboutDialog()}<div id="toast-host" class="toast-host"></div>`;
   if(preserveScroll && $('.scroll-area'))$('.scroll-area').scrollTop=scrollTop;
   renderToast();
 }
@@ -818,7 +821,7 @@ $('#app').addEventListener('input',event=>{
     return;
   }
   if(el.dataset?.sourceText!==undefined){const doc=state.sourceDocuments.find(s=>s.sourceId===state.activeSourceId);if(doc?.blocks[Number(el.dataset.sourceText)]){doc.blocks[Number(el.dataset.sourceText)].text=el.value;doc.approved=false;state.planApproved=false;const cb=$('#source-approve');if(cb)cb.checked=false;refreshPromptSummary();}return;}
-  if(el.dataset?.promptField){const key=el.dataset.promptField;state.promptConfig[key]=el.value;if(METADATA_FIELDS.includes(key)){state.manualFields[key]=true;delete state.autoDetails[key];updateExportFromPrompt(key,el.value);}refreshPromptSummary();scheduleSave();return;}
+  if(el.dataset?.promptField){const key=el.dataset.promptField;if(key==='language'&&state.promptConfig[key]!==el.value)state.planApproved=false;state.promptConfig[key]=el.value;if(METADATA_FIELDS.includes(key)){state.manualFields[key]=true;delete state.autoDetails[key];updateExportFromPrompt(key,el.value);}refreshPromptSummary();scheduleSave();return;}
   if(el.dataset?.promptCount){state.promptConfig.customCounts[el.dataset.promptCount]=el.value;refreshPromptSummary();scheduleSave();return;}
   if(el.dataset?.topicField){const topic=state.promptConfig.topics[Number(el.dataset.topicIndex)];if(topic){topic[el.dataset.topicField]=el.value;refreshPromptSummary();scheduleSave();}return;}
   if(el.dataset?.promptType){const key=el.dataset.promptType;state.promptConfig.selectedTypes=el.checked?[...new Set([...state.promptConfig.selectedTypes,key])]:state.promptConfig.selectedTypes.filter(t=>t!==key);render(true);scheduleSave();return;}

@@ -3,7 +3,7 @@
   "name": "QuestionForge — Question Paper Builder",
   "short_name": "QuestionForge",
   "description": "Turn copied questions into polished Word and PDF assessments without an AI API or server.",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "minimum_chrome_version": "131",
   "icons": {
     "16": "assets/icon16.png",

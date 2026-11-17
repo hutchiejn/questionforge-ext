@@ -14,13 +14,13 @@
 
 ---
 
-> **Release status:** QuestionForge **v0.8.4** is distributed as a production-packaged developer preview. It is **not a Chrome Web Store listing**. This repository concerns the **extension**, not the separately maintained public website. The public download contains the packaged runtime, **not the complete editable development source**.
+> **Release status:** The [latest QuestionForge release](https://github.com/hutchiejn/questionforge-ext/releases/latest) is distributed as a production-packaged developer preview. It is **not a Chrome Web Store listing**. This repository concerns the **extension**, not the separately maintained public website. The public download contains the packaged runtime, **not the complete editable development source**.
 
 ## Overview
 
 QuestionForge helps educators turn reviewed teaching materials and prepared questions into usable assessments. It combines a guided, source-aware prompt workflow with a question editor and document layout tools in a Chrome side panel.
 
-**QuestionForge does not run its own AI model or require an AI API key.** It can prepare prompts to use with ChatGPT, but the user decides what text to share, reviews the responses, and imports the resulting questions. QuestionForge then handles validation, editing, and document preparation locally.
+**QuestionForge does not run its own AI model or require an AI API key.** It can prepare prompts for ChatGPT, Gemini, DeepSeek, Claude, Perplexity, Grok, and other AI chatbots, including a chosen exam language or regional variety. The user decides what text to share, reviews the responses, and imports the resulting questions. QuestionForge then handles validation, editing, and document preparation locally.
 
 ### What it can do
 
@@ -157,7 +157,7 @@ questionforge-extension/
 
 ### Production distribution layout
 
-The **verified v0.8.4 production ZIP** contains a `questionforge-extension/` folder with the packaged runtime:
+The production ZIP contains the following runtime files at its root (shown inside an example extraction folder):
 
 ```text
 questionforge-extension/
@@ -215,7 +215,7 @@ QuestionForge follows a local-first approach:
 | `contextMenus` | Lets users send selected webpage text to the extension via a context-menu action. |
 | `storage` | Supports local preferences, optional drafts, and temporary captured selections. |
 
-Permission descriptions are based on the verified v0.8.4 manifest. Review permissions whenever the manifest changes.
+Permission descriptions follow the current `manifest.json`. Review permissions whenever the manifest changes.
 
 For vulnerability reports, use a **private contact channel** from the website rather than posting a working exploit or private files in a public issue.
 
@@ -250,23 +250,28 @@ QuestionForge maintains **two separate concerns**:
 | Source code stays private unless intentionally published | Hosts only the distributable, minified extension ZIP |
 | Produces a tested release artifact | Publishes the verified artifact and its SHA-256 checksum |
 
-**Release checklist**
+**Automated releases**
 
-1. Update `manifest.json` version and review permissions, privacy, and functionality.
-2. Run `npm run check`, `npm test`, and clean-profile manual testing.
-3. Use the project's **verified private packaging workflow** to generate the minified production ZIP. Do not publish raw development files or source maps.
-4. Inspect the ZIP's contents and confirm `manifest.json` is at the root of the extracted loadable folder.
-5. Compute its SHA-256 checksum, for example on Windows PowerShell:
+Build tools require Node.js 24 and Python 3. Install the pinned development dependencies with `npm ci`. The extension itself has no Node.js or Python requirement.
 
-   ```powershell
-   Get-FileHash .\QuestionForge-v0.8.4-production.zip -Algorithm SHA256
-   ```
+1. Update the version in `manifest.json`, `package.json`, and both version fields in `package-lock.json`. Commit and push the changes to `main`.
+2. In GitHub, open **Actions → Publish release → Run workflow**, choose `main`, enter the committed version without a `v` prefix (for example `0.8.3`), and run it. Alternatively, push the matching `v0.8.3` tag.
+3. The workflow runs syntax checks and the full test suite, builds a minified runtime-only ZIP, validates its contents and image integrity hashes, and uploads the ZIP as the release's only custom asset. It verifies the downloaded asset matches the local bytes before calling the website rebuild workflow.
 
-6. Verify download, install, and core flows from the exact release ZIP.
-7. Update the public website's download link, checksum, version details, and any affected legal/help pages.
-8. Keep the authorized GCash QR fingerprint in a separate, trusted location and monitor the live website independently.
+Pushes to `main` and pull requests run the checks and build an Actions artifact without publishing a release. Existing releases are never overwritten. The website rebuild requires the repository's `VERCEL_DEPLOY_HOOK` secret; a rebuild failure does not undo an already published release.
 
-**Note:** No current private build command has been independently confirmed here, so this README intentionally does not invent one. If the repository has a packaging script, document its actual name and required options.
+To build the same ZIP locally:
+
+```bash
+npm ci
+npm run check
+npm test
+npm run package
+```
+
+The output is `dist/QuestionForge-v<VERSION>.zip`, with `manifest.json` at the archive root. `npm run package -- 0.8.3` also checks that the requested version matches all source version fields. The builder prints the SHA-256 checksum. Build tools, source maps, tests, examples, and development dependencies are excluded from the ZIP.
+
+Test the extracted ZIP in a clean Chrome profile before distributing it. Keep the authorized GCash QR fingerprint in a separate, trusted location and verify public privacy/contact hosting separately; see [LEGAL_PUBLISHING.md](LEGAL_PUBLISHING.md).
 
 ## Support and project status
 

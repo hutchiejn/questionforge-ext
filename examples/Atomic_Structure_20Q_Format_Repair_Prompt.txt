@@ -2,6 +2,9 @@ Reformat the assessment you generated earlier in THIS conversation for direct im
 
 The original assessment must contain exactly 20 REAL questions with this type distribution: {"multiple_choice":10,"identification":5,"enumeration":3,"essay":2}.
 
+Exam language / dialect: English
+Preserve the original assessment's language and regional wording. If they conflict with the requested language or dialect, STOP and ask before translating; this is formatting repair only. Keep JSON field names, type identifiers, A–D choice labels, MCQ answer letters, and the true_false answer strings "True" or "False" exactly as specified.
+
 INSTRUCTIONS
 1. Use ONLY the original 20 questions. Preserve their meanings, choices, original answers, and explanations; do not rewrite, add, split, merge, or invent questions.
 2. Do not treat headings, directions, answer-key table rows, suggested answer guides, or numbered answer lists as new questions.

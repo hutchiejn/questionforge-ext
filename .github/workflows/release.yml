@@ -1,0 +1,93 @@
+name: Publish release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version already committed in manifest.json and package.json (for example 0.8.3)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: extension-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - name: Build and validate runtime ZIP
+        id: package
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          version="${REQUESTED_VERSION:-$(node -p "require('./manifest.json').version")}"
+          if [ "$REF_TYPE" = tag ]; then version="${REF_NAME#v}"; fi
+          npm run package -- "$version"
+          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extension-zip
+          path: dist/QuestionForge-v${{ steps.package.outputs.version }}.zip
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+  publish:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      VERSION: ${{ needs.build.outputs.version }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extension-zip
+          path: dist
+      - name: Publish one ZIP and verify the uploaded bytes
+        run: |
+          tag="v$VERSION"
+          zip="QuestionForge-$tag.zip"
+          checksum="$(sha256sum "dist/$zip" | cut -d ' ' -f 1)"
+          cat > release-notes.md <<'NOTES'
+          Download the attached ZIP and extract it. In Chrome, open chrome://extensions, enable Developer mode, and use Load unpacked to select the folder containing manifest.json.
+
+          This package contains only the minified extension runtime and required assets. Tests, examples, development tools, dependencies, and source maps are excluded. Chrome 131 or later is required.
+          NOTES
+          printf '\nSHA-256: `%s`\n' "$checksum" >> release-notes.md
+          gh release create "$tag" "dist/$zip" --target "$GITHUB_SHA" --title "QuestionForge $tag" --generate-notes --notes-file release-notes.md
+          test "$(gh api "repos/$GH_REPO/releases/tags/$tag" --jq '.assets | length')" = 1
+          gh release download "$tag" --pattern "$zip" --dir verified
+          cmp "dist/$zip" "verified/$zip"
+          gh release view "$tag" --json url --jq .url >> "$GITHUB_STEP_SUMMARY"
+
+  update-website:
+    needs: publish
+    uses: ./.github/workflows/update-website.yml
+    secrets:
+      VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}

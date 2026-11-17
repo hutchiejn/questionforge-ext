@@ -11,6 +11,10 @@ Total questions: 30
 Difficulty: Balanced: foundational through higher-order questions
 Cognitive levels: Remember, Understand, Apply, Analyze
 
+Exam language / dialect: English
+Use this language or regional variety for coverage discussions, question stems, option text, written answers, explanations, and marking guides, even when source material or formatting examples use another language. Preserve the meaning and difficulty of the material; retain proper names and necessary technical terms. Do not mix languages or dialects unless I request it. If you cannot reliably use the specified variety or a term is unclear, STOP and ask for clarification or teacher-approved wording; do not silently substitute another language.
+Keep JSON field names, question type identifiers, A–D choice labels, and MCQ answer letters exactly as specified. For true_false, keep the answer strings "True" or "False" in English. In plain text, keep the section headings and Type:, Answer:, Explanation: labels exactly as shown; write their human-readable content in the requested language.
+
 SOURCE DOCUMENTS
 I will attach both the BOW and lesson plan in this conversation, or paste its verified text if file uploads are unavailable. Read the actual supplied material before proceeding. If it is missing, unreadable, or incomplete, ask me to attach or paste it or clarify the gap; DO NOT pretend you have read it. Use the BOW to identify scope, pacing, and coverage, and the lesson plan to confirm what was taught and the objectives. Flag conflicts rather than guessing.
 

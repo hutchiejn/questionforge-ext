@@ -6,7 +6,7 @@ const read = file => readFileSync(new URL('../'+file,import.meta.url),'utf8');
 test('About / Privacy / Contact are accessible without extra permissions',()=>{
  const app=read('app.js');
  const manifest=JSON.parse(read('manifest.json'));
- assert.equal(manifest.version,'0.8.2');
+ assert.equal(manifest.version,JSON.parse(read('package.json')).version);
  assert.deepEqual(manifest.permissions,['sidePanel','contextMenus','storage']);
  for(const action of ['openAbout','closeAbout','openPrivacy'])assert.match(app,new RegExp('data-action="'+action+'"'));
  for(const file of ['docs/privacy.html','docs/contact.html'])assert.match(app,new RegExp(file.replace('.','\\.')));

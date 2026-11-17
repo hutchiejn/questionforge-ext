@@ -24,11 +24,11 @@ test('prompt builder offers all requested source materials, question type splits
 test('legacy attachment drafts restore and copy neutral prompts through approval and repair',async()=>{
   const handlers={},copied=[];
   const root={innerHTML:'',addEventListener(type,handler){handlers[type]=handler;}};
-  const toast={innerHTML:''};
+  const toast={innerHTML:''},approval={checked:false};
   const originals=Object.fromEntries(['document','localStorage','navigator','setTimeout'].map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
   const globals={
-    document:{querySelector(selector){return selector==='#app'?root:selector==='#toast-host'?toast:null;}},
-    localStorage:{getItem(){return JSON.stringify({questionforgeDraft:{sourceMode:'chatgpt'},questionforgePrivacy:{shareWarning:false}});}},
+    document:{querySelector(selector){return selector==='#app'?root:selector==='#toast-host'?toast:selector==='#plan-approved'?approval:null;}},
+    localStorage:{getItem(){return JSON.stringify({questionforgeDraft:{sourceMode:'chatgpt',promptConfig:{language:'Hiligaynon (Iloilo)'}},questionforgePrivacy:{shareWarning:false}});}},
     navigator:{clipboard:{async writeText(text){copied.push(text);}}},
     setTimeout:()=>0,
   };
@@ -43,6 +43,10 @@ test('legacy attachment drafts restore and copy neutral prompts through approval
     assert.match(root.innerHTML,/value="attachment" checked/);
     assert.match(root.innerHTML,/If uploads are unavailable/);
     assert.match(root.innerHTML,/If you switch chatbots or start a new chat/);
+    assert.match(root.innerHTML,/label for="prompt-language">Exam language \/ dialect/);
+    assert.match(root.innerHTML,/data-prompt-field="language" list="prompt-languages"/);
+    assert.match(root.innerHTML,/value="Hiligaynon \(Iloilo\)"/);
+    handlers.input({target:{dataset:{promptField:'language'},value:'Tagalog (Batangas)'}});
     click({action:'copyExam'});
     await settle();
     assert.equal(copied.length,0);
@@ -53,14 +57,23 @@ test('legacy attachment drafts restore and copy neutral prompts through approval
     assert.match(copied[0],/COVERAGE PLANNING ONLY/);
     assert.match(copied[0],/paste its verified text if file uploads are unavailable/);
     handlers.change({target:{id:'plan-approved',checked:true}});
+    assert.equal(approval.checked,true);
     click({action:'copyExam'});
     await settle();
     assert.equal(copied.length,2);
     assert.match(copied[1],/STRICT, IMPORT-READY JSON/);
+    for(const prompt of copied)assert.match(prompt,/Exam language \/ dialect: Tagalog \(Batangas\)/);
+    handlers.input({target:{dataset:{promptField:'language'},value:'Cebuano (Bisaya)'}});
+    assert.equal(approval.checked,false);
+    click({action:'copyExam'});
+    await settle();
+    assert.equal(copied.length,2);
+    assert.match(toast.innerHTML,/Approve the coverage plan in your chatbot first/);
     click({action:'copyRepair'});
     await settle();
     assert.equal(copied.length,3);
     assert.match(copied[2],/FORMAT REPAIR/);
+    assert.match(copied[2],/Exam language \/ dialect: Cebuano \(Bisaya\)/);
     for(const prompt of copied)assert.doesNotMatch(prompt,/ChatGPT|Gemini|DeepSeek|Claude|Perplexity|Grok/i);
   }finally{
     for(const [key,descriptor] of Object.entries(originals)){

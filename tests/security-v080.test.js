@@ -12,7 +12,7 @@ const read=(name)=>readFileSync(new URL('../'+name,import.meta.url),'utf8');
 
 test('explicit MV3 policy blocks remote code, frames, objects and unapproved network access',()=>{
  const manifest=JSON.parse(read('manifest.json'));
- assert.equal(manifest.version,'0.8.2');
+ assert.equal(manifest.version,JSON.parse(read('package.json')).version);
  assert.deepEqual(manifest.permissions,['sidePanel','contextMenus','storage']);
  const policy=manifest.content_security_policy.extension_pages;
  for(const directive of ["script-src 'self'", "connect-src 'self'", "object-src 'none'", "frame-ancestors 'none'"])
