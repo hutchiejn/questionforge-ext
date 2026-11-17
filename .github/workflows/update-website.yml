@@ -1,0 +1,26 @@
+name: Update website download
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: website-release-update
+  cancel-in-progress: false
+
+jobs:
+  rebuild-website:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger website release validation and rebuild
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
+            echo "Add the website's Vercel Deploy Hook as the VERCEL_DEPLOY_HOOK repository secret."
+            exit 1
+          fi
+          curl --fail --silent --show-error --request POST "$VERCEL_DEPLOY_HOOK" --output /dev/null
